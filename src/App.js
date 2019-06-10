@@ -40,9 +40,10 @@ class App extends React.Component {
     };
     removeFromBasket = (index) => {
         console.log(index);
-        this.state.basketItems.splice(index, 1);
+        let newBasket = this.state.basketItems;
+        newBasket.splice(index);
         this.setState({
-            basketItems: this.state.basketItems
+            basketItems: newBasket
         })
     };
     sortPhones = (e) => {
@@ -89,7 +90,7 @@ class App extends React.Component {
                                 removeFromBasket={this.removeFromBasket}
                             />
                         </div>
-
+ш
                         <div className="col-md-10">
                             {this.state.selectedPhone ? (
                                 <Viewer
