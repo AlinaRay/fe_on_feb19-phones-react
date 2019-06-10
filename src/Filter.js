@@ -1,6 +1,10 @@
 import React from 'react';
 
-const Filter = () => {
+export default class Filter extends React.Component{
+    sortPhone = (e) =>{
+        this.props.sortPhones(e.target.value);
+    };
+render(){
   return (
     <section>
       <p>
@@ -10,13 +14,11 @@ const Filter = () => {
 
       <p>
         Sort by:
-        <select>
+        <select onChange={this.sortPhone}>
           <option value="name">Alphabetical</option>
           <option value="age">Newest</option>
         </select>
       </p>
     </section>
   );
-};
-
-export default Filter;
+};}
