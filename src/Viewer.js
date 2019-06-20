@@ -14,21 +14,21 @@ export default class Viewer extends React.Component {
         })
     }
     render() {
-        const {onBack, phone: {name, description, images}, addToBasket} = this.props;
+        const {onBack, phone, addToBasket} = this.props;
         const {currentImage} = this.state;
         return (
             <div>
-                <img className="phone" src={currentImage} alt='img'/>
+                <img className="phone" src={currentImage} alt={phone.name} />
                 <button onClick={onBack}>Back</button>
-                <button onClick={() => addToBasket(name)}>Add to basket</button>
+                <button onClick={() => addToBasket(phone.name)}>Add to basket</button>
 
-                <h1>{name}</h1>
-                <p>{description}</p>
+                <h1>{phone.name}</h1>
+                <p>{phone.description}</p>
 
                 <ul className="phone-thumbs">
-                    {images.map((imageUrl, index) => (
+                    {phone.images.map((imageUrl, index) => (
                         <li key={index}>
-                            <img src={imageUrl} alt ='' onClick={() => this.handleClick(index)}/>
+                            <img src={imageUrl} alt ={phone.name} onClick={() => this.handleClick(index)}/>
                         </li>
                     ))}
                 </ul>

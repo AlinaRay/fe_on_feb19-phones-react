@@ -3,7 +3,6 @@ import React from 'react';
 const Catalog = (props) => {
   return (
     <ul className="phones">
-
       { props.phones.map(phone => (
         <li className="thumbnail" key={phone.id} >
           <a

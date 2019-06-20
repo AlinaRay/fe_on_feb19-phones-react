@@ -20,30 +20,35 @@ class App extends React.Component {
     }
 
     addToBasket = (phoneId) => {
-        const items = this.state.basketItems;
-        const isItemPresent = items.filter(el => el.name === phoneId).length > 0;
-        if (isItemPresent) {
-            let item = items.find(el => {
-                return el.name === phoneId;
-            });
-            item.count = Number.parseInt(item.count) + 1;
-
-            this.setState({
-                basketItems: [...items]
-            })
-        }
-        else {
-            this.setState({
-                basketItems: [...items, {name: phoneId, count: 1}]
-            })
+        const items = [...this.state.basketItems];
+        const itemIndex = items.findIndex((el) => el.name === phoneId);
+        if (itemIndex > -1) {
+          items[itemIndex] = {
+              ...items[itemIndex],
+              count: items[itemIndex].count + 1
+          };
+          this.setState({
+              basketItems: items,
+          })
+        } else {
+           this.setState({
+               basketItems: [...items, {name: phoneId, count: 1}]
+           })
         }
     };
     removeFromBasket = (index) => {
-        console.log(index);
-        let newBasket = this.state.basketItems;
-        newBasket.splice(index);
-        this.setState({
-            basketItems: newBasket
+        const newBasket = [...this.state.basketItems];
+
+
+        this.setState((prevState) => {
+            if (prevState.basketItems[index].count >= 2) {
+                newBasket[index].count = newBasket[index].count - 1;
+            } else {
+                newBasket.splice(index);
+            }
+            return {
+                basketItems: [...newBasket]
+            }
         })
     };
     sortPhones = (e) => {
@@ -59,21 +64,29 @@ class App extends React.Component {
         }
     };
     sortByName = () => {
-        this.setState({
-            phones: getAll(),
-            selectedPhone: null,
-            basketItems: [],
+        this.setState((prevState) => {
+            return {
+                phones: [...prevState.phones].sort((a, b) => a.name.localeCompare(b.name))
+            }
         })
     };
 
     sortByAge = () => {
-        this.setState(() => {
-            let items = getAll();
-            items.sort((a, b) => a.age - b.age);
+        this.setState((prevState) => {
             return {
-                phones: items,
-                selectedPhone: null,
-                basketItems: [],
+                phones: [...prevState.phones].sort((a, b) => a.age - b.age)
+            }
+        })
+    };
+    search = (event) => {
+        let updatedList = getAll();
+        updatedList = updatedList.filter(item => {
+            return item.name.toLowerCase().search(
+                event.target.value.toLowerCase()) !== -1;
+        });
+        this.setState(() => {
+            return {
+                phones: updatedList
             }
         })
     };
@@ -84,13 +97,13 @@ class App extends React.Component {
                 <div className="container-fluid">
                     <div className="row">
                         <div className="col-md-2">
-                            <Filter sortPhones={this.sortPhones}/>
+                            <Filter sortPhones={this.sortPhones}
+                                    search={this.search}/>
                             <Basket
                                 items={this.state.basketItems}
                                 removeFromBasket={this.removeFromBasket}
                             />
                         </div>
-ш
                         <div className="col-md-10">
                             {this.state.selectedPhone ? (
                                 <Viewer
@@ -98,7 +111,6 @@ class App extends React.Component {
                                     onBack={() => {
                                         this.setState({
                                             selectedPhone: null,
-                                            namePhone: null
                                         });
                                     }}
                                     addToBasket={this.addToBasket}
@@ -109,7 +121,6 @@ class App extends React.Component {
                                     onPhoneSelected={(phoneId) => {
                                         this.setState({
                                             selectedPhone: getById(phoneId),
-                                            namePhone: phoneId,
                                         });
                                     }}
                                     addToBasket={this.addToBasket}
